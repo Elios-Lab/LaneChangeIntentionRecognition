@@ -1,8 +1,9 @@
 # Lane Change Intention Recognition Framework
 <div align="center">
     <a href="https://elios-lab.github.io/LC-Intention-Framework"><img src="https://img.shields.io/badge/Project%20Page-0E472C?logo=GitHub" alt="Project Page" style="width: 120px;"></a>
-    <a href="https://doi.org/10.5281/zenodo.16686054"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.16686054.svg" alt="DOI"></a>
+    <a href="https://doi.org/10.5281/zenodo.16686054"><img src="https://zenodo.org/badge/DOI/10.5281/zenodo.16686054.svg" alt="DOI" style="width: 120px;"></a>
 </div>
+
 ## Overview
 
 This framework introduces: (i) a novel public dataset of human-performed simulated lane change maneuvers; (ii) a dedicated CARLA highway map designed for extended driving sessions; and (iii) tools to facilitate data collection and model evaluation. Below is a high-level overview of the workflow:
