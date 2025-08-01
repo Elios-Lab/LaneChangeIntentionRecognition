@@ -1,0 +1,6 @@
+pygame
+carla==0.9.15
+opencv-python
+psutil
+pandas
+pydub

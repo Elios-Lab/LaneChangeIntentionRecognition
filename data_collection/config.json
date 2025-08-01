@@ -1,0 +1,31 @@
+{
+    "audio": {
+        "engine_sound": "./src/engine.wav"
+    },
+    "video": {
+        "bg_dashboard": "./src/bg_dashboard.png"
+    },
+    "gameplay": {
+        "server": "./WindowsNoEditor/CarlaUE4.exe",
+        "map": "/Game/map_package/Maps/OneWayDMIR-02-08/OneWayDMIR-02-08",
+        "baseline_mode": true,
+        "wheel_path": "./src/wheel.ini"
+    },
+    "traffic": {
+        "SNPV": {
+            "vehicles_dist": 200,
+            "num_vehicles": 10,
+            "min_distance_behind": 50,
+            "max_distance_behind": 1000,
+            "front_vehicle_speeds": [90, 100, 140, 100, 150, 90],
+            "front_vehicle_traveled_dist": 2000
+        },
+        "HNPV": {
+            "back_distance": 40,
+            "front_distance": 300,
+            "speed": 160,
+            "time_int": 120,
+            "delta_time": 10
+        }
+    }
+}
