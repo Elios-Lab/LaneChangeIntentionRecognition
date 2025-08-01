@@ -6,7 +6,7 @@
         "bg_dashboard": "./src/bg_dashboard.png"
     },
     "gameplay": {
-        "server": "./WindowsNoEditor/CarlaUE4.exe",
+        "server": "../maps/LC_Simulator/CarlaUE4.exe",
         "map": "/Game/map_package/Maps/OneWayDMIR-02-08/OneWayDMIR-02-08",
         "baseline_mode": true,
         "wheel_path": "./src/wheel.ini"

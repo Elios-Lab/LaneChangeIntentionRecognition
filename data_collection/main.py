@@ -2549,6 +2549,14 @@ def main():
         default=config.get('gameplay', {}).get('baseline_mode', True),
         help='Enable baseline mode. If false, it will be treatment mode'
     )
+    
+    argparser.add_argument(
+        '--treatment',
+        action='store_false',
+        dest='baseline',
+        help='Disable baseline mode. Overrides --baseline if both are provided'
+    )
+    
     args = argparser.parse_args()
 
     # Kill old instances of the CARLA server

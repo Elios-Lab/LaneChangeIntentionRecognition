@@ -1,3 +1,11 @@
+# Lane Change Intention Recognition Framework
+
+Below is a high-level overview of the workflow for the Lane Change Intention Recognition Framework:
+
+![Workflow](pics/workflow.svg)
+
+The map can be downloaded from [this link](http://bit.ly/4l6Rb3Q). We suggest unzipping it in the `maps` folder of the repository.
+
 ## Data Collection
 
 The `main.py` script includes functionality for collecting data to train and evaluate the lane change intention recognition model. Below is an overview of the data collection process:
@@ -9,9 +17,8 @@ The `main.py` script includes functionality for collecting data to train and eva
 Refer to the `main.py` file for implementation details and customization options.
 
 ### Setup Instructions
-### Setup Instructions
 
-1. **Download the Map**: Download the required map from [this link](http://bit.ly/4l6Rb3Q), unzip it, and set the path to the map in the `config.json` file.
+1. **Map**: Set the map path in the `config.json` file.
 2. **Create a Virtual Environment**:
     - Using `venv`:
       ```bash
@@ -20,8 +27,8 @@ Refer to the `main.py` file for implementation details and customization options
       ```
     - Using `conda`:
       ```bash
-      conda create -n lanechange python=3.8
-      conda activate lanechange
+      conda create -n LC-data-collection python=3.8
+      conda activate LC-data-collection
       ```
 3. **Install Dependencies**: Install the required packages from `requirements.txt`:
     ```bash
@@ -56,7 +63,11 @@ Replace `[options]` with the desired command-line arguments. For example:
 ```bash
 python main.py --port 2000 --wheel --baseline
 ```
+or
+
+```bash
+python main.py --port 2000 --wheel --treatment
+```
 
 #### Output
 After a successful run, the script will output the collected data to a specified log file, which can be later used for replicating the run or can be converted for training and evaluating the lane change intention recognition model.
-
