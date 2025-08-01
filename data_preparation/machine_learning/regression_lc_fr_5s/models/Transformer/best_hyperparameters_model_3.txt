@@ -1,0 +1,9 @@
+Best Hyperparameters:
+head_size: 128
+num_heads: 1
+ff_dim: 64
+num_transformer_blocks: 2
+dropout: 0.2
+mlp_units: 224
+mlp_dropout: 0.30000000000000004
+learning_rate: 0.001

@@ -1,0 +1,8 @@
+Best Hyperparameters:
+units_1: 192
+use_second_gru: True
+dropout_1: 0.30000000000000004
+learning_rate: 0.001
+units_2: 32
+use_third_gru: True
+dropout_2: 0.2

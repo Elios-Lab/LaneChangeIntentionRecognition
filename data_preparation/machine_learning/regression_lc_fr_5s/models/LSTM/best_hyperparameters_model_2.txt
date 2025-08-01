@@ -1,0 +1,10 @@
+Best Hyperparameters:
+units_1: 32
+use_second_lstm: True
+dropout_1: 0.4
+learning_rate: 0.01
+units_2: 32
+use_third_lstm: False
+dropout_2: 0.4
+units_3: 96
+dropout_3: 0.2

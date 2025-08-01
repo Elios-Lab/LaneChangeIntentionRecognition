@@ -71,3 +71,100 @@ python main.py --port 2000 --wheel --treatment
 
 #### Output
 After a successful run, the script will output the collected data to a specified log file, which can be later used for replicating the run or can be converted for training and evaluating the lane change intention recognition model.
+
+
+## Data Preparation and Machine Learning
+
+This repository contains the data preparation and machine learning pipeline for predicting lane changes in CARLA-based driving scenarios.
+
+### Overview
+
+Data collected from a CARLA session is first saved as a .txt log file (e.g., log_001.txt). These log files should be placed inside the logs/ folder and converted into .h5 format (e.g., log_001.h5) using the script generate_CDF_Carla_log_to_H5.py, which follows the Hi-Drive Common Data Format (CDF) specification.
+
+Each .h5 file stores a wide range of signals from the driving session. To simulate real-world sensor availability, 30 selected features are extracted from the .h5 file. This selection and labeling is performed by the script h5_to_CSV_and_labeling.py, which also assigns labels to each timestamp:
+
+0–4: Lane change direction
+
+4.1: Free ride (no lane change)
+
+"-": Ignored timestamps (up to 1.5 seconds after a lane change)
+
+The result is a .csv file saved in the dataset/ folder, containing the selected features and labels at 10 Hz.
+
+For machine learning, the .csv data is segmented into overlapping 5-second windows, capturing the temporal context of the driving behavior. These windows are then normalized (scaled) to ensure consistency across users. Finally, machine learning models are trained using this windowed and scaled dataset, with Bayesian optimization used to find the best hyperparameters for lane change intention prediction.
+
+### Folders:
+#### ../maps: Put the LC_Simulator folder for CARLA here. ⚠️ Important: This must match the map used during data collection.
+#### h5: Generated .h5 CDF files will be stored here.
+#### dataset: Processed .csv files with selected features and labels.
+#### machine_learning: Contains scripts and notebooks for model training and evaluation.
+
+### Setup
+
+#### Installation
+1. Create and activate conda environment:
+
+        conda create -n lc_data_preparation python=3.10.14
+        conda activate lc_data_preparation
+2. Install required packages:
+        
+        pip install -r requirements.txt
+
+#### Workflow
+⚠️If you have already downloaded the dataset, you can skip directly to step 3.
+
+0. Insert Map
+
+    Put the LC_Simulator folder (containing the CARLA map used during data collection) into the ../maps/ directory. 
+    ⚠️ Make sure this is the same map used to generate the .txt log files.
+
+  
+1. Convert .txt Logs to .h5 (CDF Format)
+    
+    Open generate_CDF_Carla_log_to_H5.py and specify in the first lines the log file(s) you want to convert. (the logs file are created during the data collection phase inside the data_collection/logs folder)
+
+    Run the script. If you encounter a RuntimeError: time-out..., simply re-run it.
+
+    The output .h5 file(s) will be saved in the h5/ folder, retaining the original filename.
+
+2. Convert .h5 to .csv with Labels
+
+    Open h5_to_CSV_and_labeling.py and specify the .h5 file(s) to convert.
+
+    The script extracts 30 selected features and adds labels:
+
+    0–4: Lane change direction
+
+    4.1: Free ride
+
+    "-": Ignored timestamps (up to 1.5s after a lane change)
+
+    The resulting .csv file will be saved in the dataset/ folder.
+
+3. Prepare Training, Validation, and Test Sets
+
+    Inside the machine_learning/ folder, split users by folder for a user-independent training setup:
+
+    validation/: Users 5, 8, 10, 12, 16, 19, 27
+
+    testing/: Users 2, 7, 13, 18, 25, 31, 36
+
+    training/: All remaining users
+
+    This split follows the experimental setup used in the reference publication.
+
+4. Generate 5s Windows for ML
+    
+    Run the CSV_to_windows_by_users_5s.ipynb notebook in the machine_learning/ folder to generate windowed datasets. The output will be saved in the data/ directory.
+
+5. Normalize Data & Train Models
+    
+    Navigate to machine_learning/regression_lc_fr_5s/.
+
+    Run the regression_lc_fr.ipynb notebook:
+
+    This script will normalize the windowed dataset.
+
+    It will also train machine learning models using Bayesian optimization.
+
+    Output is saved in the data_prepared/ folder.
