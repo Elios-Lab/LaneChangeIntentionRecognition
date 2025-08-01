@@ -1,24 +1,31 @@
 # Lane Change Intention Recognition Framework
 
-Below is a high-level overview of the workflow for the Lane Change Intention Recognition Framework:
+## Overview
+
+This framework introduces: (i) a novel public dataset of human-performed simulated lane change maneuvers; (ii) a dedicated CARLA highway map designed for extended driving sessions; and (iii) tools to facilitate data collection and model evaluation. Below is a high-level overview of the workflow:
 
 ![Workflow](pics/workflow.svg)
 
-The map can be downloaded from [this link](http://bit.ly/4l6Rb3Q). We suggest unzipping it in the `maps` folder of the repository.
+The map can be downloaded from [this link](http://bit.ly/4l6Rb3Q). Unzip it into the `maps` folder of the repository.
+
+---
 
 ## Data Collection
 
-The `main.py` script includes functionality for collecting data to train and evaluate the lane change intention recognition model. Below is an overview of the data collection process:
+The `main.py` script facilitates data collection for training and evaluating the lane change intention recognition model.
 
-1. **Sensor Integration**: The script interfaces with vehicle sensors (e.g., steering angle, speed, turn signals) to gather real-time driving data.
-2. **Data Logging**: Collected data is logged and stored in a CARLA log file for further processing.
-3. **Configuration**: Parameters such as sampling rate and data storage paths can be configured in the script for flexibility.
+### Process
 
-Refer to the `main.py` file for implementation details and customization options.
+1. **Sensor Integration**: Interfaces with vehicle sensors (e.g., steering angle, speed, turn signals) to gather real-time driving data.
+2. **Environment Data Collection**: Collects data from the CARLA simulator, including vehicle dynamics and environmental conditions.
+3. **Data Logging**: Saves the collected data into structured log files for later analysis.
+4. **Configuration**: Customize parameters like sampling rate and storage paths in the script.
+
+Refer to `main.py` for implementation details.
 
 ### Setup Instructions
 
-1. **Map**: Set the map path in the `config.json` file.
+1. **Map Configuration**: Set the map path in `config.json`.
 2. **Create a Virtual Environment**:
     - Using `venv`:
       ```bash
@@ -30,141 +37,129 @@ Refer to the `main.py` file for implementation details and customization options
       conda create -n LC-data-collection python=3.8
       conda activate LC-data-collection
       ```
-3. **Install Dependencies**: Install the required packages from `requirements.txt`:
+3. **Install Dependencies**:
     ```bash
     pip install -r requirements.txt
     ```
 
-#### Running the CARLA Manual Control Client
+### Running the CARLA Manual Control Client
 
-The `main.py` script serves as the entry point for running the CARLA Manual Control Client. This script provides various functionalities for interacting with the CARLA simulator, including manual control, autopilot, and data recording. Below is an overview of its features and usage:
+The `main.py` script serves as the entry point for interacting with the CARLA simulator.
 
 #### Features
 
-1. **Configuration Loading**: The script loads a `config.json` file to customize gameplay settings, such as baseline or treatment modes.
-2. **Command-Line Arguments**: A wide range of arguments can be passed to the script to control its behavior, including:
-    - `--host` and `--port` for specifying the CARLA server's IP and port.
-    - `--autopilot` to enable autopilot mode.
-    - `--record` and `--savevideo` for recording frames and saving videos of the simulation.
-    - `--baseline` to toggle between baseline and treatment modes.
-3. **Synchronous Mode**: The script supports synchronous mode execution for precise control over simulation timing.
-4. **Steering Wheel Simulation**: Optionally, a steering wheel controller can be activated for enhanced realism.
+- **Configuration Loading**: The script loads a `config.json` file to customize gameplay settings, such as baseline or treatment modes.
+- **Command-Line Arguments**:
+    - `--host`, `--port`: Specify CARLA server IP and port.
+    - `--autopilot`: Enable autopilot mode.
+    - `--record`, `--savevideo`: Record frames and save simulation videos.
+    - `--baseline`: Use baseline mode.
+    - `--treatment`: Use treatment mode.
+- **Synchronous Mode**: Ensures precise simulation timing.
+- **Steering Wheel Simulation**: Optionally activate a steering wheel controller.
 
 #### Usage
 
-To run the script, use the following command:
+Run the script with desired options:
 
 ```bash
 python main.py [options]
 ```
 
-Replace `[options]` with the desired command-line arguments. For example:
+Examples:
 
 ```bash
 python main.py --port 2000 --wheel --baseline
-```
-or
-
-```bash
 python main.py --port 2000 --wheel --treatment
 ```
 
 #### Output
-After a successful run, the script will output the collected data to a specified log file, which can be later used for replicating the run or can be converted for training and evaluating the lane change intention recognition model.
 
+Collected data is saved to a log file for replication or conversion into training and evaluation datasets.
+
+---
 
 ## Data Preparation and Machine Learning
 
-This repository contains the data preparation and machine learning pipeline for predicting lane changes in CARLA-based driving scenarios.
+This repository includes the pipeline for preparing data and training models to predict lane changes.
 
-### Overview
+### Workflow Overview
 
-Data collected from a CARLA session is first saved as a .txt log file (e.g., log_001.txt). These log files should be placed inside the logs/ folder and converted into .h5 format (e.g., log_001.h5) using the script generate_CDF_Carla_log_to_H5.py, which follows the Hi-Drive Common Data Format (CDF) specification.
+1. **Log Conversion**: Convert `.txt` logs to `.h5` (CDF format) using `generate_CDF_Carla_log_to_H5.py`.
+2. **Feature Extraction**: Extract 30 features and label timestamps using `h5_to_CSV_and_labeling.py`:
+    - **Labels**:
+        - `0–4`: Lane change direction.
+        - `4.1`: Free ride (no lane change).
+        - `"-"`: Ignored timestamps (up to 1.5 seconds after a lane change).
+3. **Windowing**: Segment data into overlapping 5-second windows at 10 Hz.
+4. **Normalization**: Scale data for consistency.
+5. **Model Training**: Train models using Bayesian optimization.
 
-Each .h5 file stores a wide range of signals from the driving session. To simulate real-world sensor availability, 30 selected features are extracted from the .h5 file. This selection and labeling is performed by the script h5_to_CSV_and_labeling.py, which also assigns labels to each timestamp:
+### Folder Structure
 
-0–4: Lane change direction
+- **`../maps`**: Place the `LC_Simulator` folder here. ⚠️ Ensure it matches the map used during data collection.
+- **`h5/`**: Stores generated `.h5` files.
+- **`dataset/`**: Contains processed `.csv` files with features and labels.
+- **`machine_learning/`**: Scripts and notebooks for model training and evaluation.
 
-4.1: Free ride (no lane change)
-
-"-": Ignored timestamps (up to 1.5 seconds after a lane change)
-
-The result is a .csv file saved in the dataset/ folder, containing the selected features and labels at 10 Hz.
-
-For machine learning, the .csv data is segmented into overlapping 5-second windows, capturing the temporal context of the driving behavior. These windows are then normalized (scaled) to ensure consistency across users. Finally, machine learning models are trained using this windowed and scaled dataset, with Bayesian optimization used to find the best hyperparameters for lane change intention prediction.
-
-### Folders:
-#### ../maps: Put the LC_Simulator folder for CARLA here. ⚠️ Important: This must match the map used during data collection.
-#### h5: Generated .h5 CDF files will be stored here.
-#### dataset: Processed .csv files with selected features and labels.
-#### machine_learning: Contains scripts and notebooks for model training and evaluation.
+---
 
 ### Setup
 
 #### Installation
-1. Create and activate conda environment:
 
-        conda create -n lc_data_preparation python=3.10.14
-        conda activate lc_data_preparation
-2. Install required packages:
-        
-        pip install -r requirements.txt
+1. Create and activate a conda environment:
+    ```bash
+    conda create -n lc_data_preparation python=3.10.14
+    conda activate lc_data_preparation
+    ```
+2. Install dependencies:
+    ```bash
+    pip install -r requirements.txt
+    ```
 
-#### Workflow
-⚠️If you have already downloaded the dataset, you can skip directly to step 3.
+---
 
-0. Insert Map
+### Detailed Workflow
 
-    Put the LC_Simulator folder (containing the CARLA map used during data collection) into the ../maps/ directory. 
-    ⚠️ Make sure this is the same map used to generate the .txt log files.
+#### Step 0: Insert Map
 
-  
-1. Convert .txt Logs to .h5 (CDF Format)
-    
-    Open generate_CDF_Carla_log_to_H5.py and specify in the first lines the log file(s) you want to convert. (the logs file are created during the data collection phase inside the data_collection/logs folder)
+Place the `LC_Simulator` folder into the `../maps/` directory. ⚠️ Ensure it matches the map used to generate `.txt` logs.
 
-    Run the script. If you encounter a RuntimeError: time-out..., simply re-run it.
+#### Step 1: Convert Logs to `.h5`
 
-    The output .h5 file(s) will be saved in the h5/ folder, retaining the original filename.
+- Open `generate_CDF_Carla_log_to_H5.py` and specify the log files.
+- Run the script. If a `RuntimeError: time-out...` occurs, re-run it.
+- Output `.h5` files are saved in the `h5/` folder.
 
-2. Convert .h5 to .csv with Labels
+#### Step 2: Convert `.h5` to `.csv`
 
-    Open h5_to_CSV_and_labeling.py and specify the .h5 file(s) to convert.
+- Open `h5_to_CSV_and_labeling.py` and specify the `.h5` files.
+- Extract features and label timestamps:
+    - `0–4`: Lane change direction.
+    - `4.1`: Free ride.
+    - `"-"`: Ignored timestamps.
+- Output `.csv` files are saved in the `dataset/` folder.
 
-    The script extracts 30 selected features and adds labels:
+#### Step 3: Prepare Training, Validation, and Test Sets
 
-    0–4: Lane change direction
+- Split users into folders for user-independent training:
+    - **Validation**: Users 5, 8, 10, 12, 16, 19, 27.
+    - **Testing**: Users 2, 7, 13, 18, 25, 31, 36.
+    - **Training**: Remaining users.
 
-    4.1: Free ride
+#### Step 4: Generate 5-Second Windows
 
-    "-": Ignored timestamps (up to 1.5s after a lane change)
+Run `CSV_to_windows_by_users_5s.ipynb` in the `machine_learning/` folder. Output is saved in the `data/` directory.
 
-    The resulting .csv file will be saved in the dataset/ folder.
+#### Step 5: Normalize Data & Train Models
 
-3. Prepare Training, Validation, and Test Sets
+- Navigate to `machine_learning/regression_lc_fr_5s/`.
+- Run `regression_lc_fr.ipynb`:
+    - Normalize the dataset.
+    - Train models using Bayesian optimization.
+    - Output is saved in the `data_prepared/` folder.
 
-    Inside the machine_learning/ folder, split users by folder for a user-independent training setup:
+--- 
 
-    validation/: Users 5, 8, 10, 12, 16, 19, 27
-
-    testing/: Users 2, 7, 13, 18, 25, 31, 36
-
-    training/: All remaining users
-
-    This split follows the experimental setup used in the reference publication.
-
-4. Generate 5s Windows for ML
-    
-    Run the CSV_to_windows_by_users_5s.ipynb notebook in the machine_learning/ folder to generate windowed datasets. The output will be saved in the data/ directory.
-
-5. Normalize Data & Train Models
-    
-    Navigate to machine_learning/regression_lc_fr_5s/.
-
-    Run the regression_lc_fr.ipynb notebook:
-
-    This script will normalize the windowed dataset.
-
-    It will also train machine learning models using Bayesian optimization.
-
-    Output is saved in the data_prepared/ folder.
+Enjoy using the Lane Change Intention Recognition Framework!
