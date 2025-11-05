@@ -114,6 +114,8 @@ This repository includes the pipeline for preparing data and training models to 
 
 #### Installation
 
+Inside the folder `data_preparation`
+
 1. Create and activate a conda environment:
     ```bash
     conda create -n lc_data_preparation python=3.10.14
