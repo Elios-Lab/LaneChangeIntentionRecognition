@@ -87,6 +87,8 @@ Collected data is saved to a log file for replication or conversion into trainin
 
 This repository includes the pipeline for preparing data and training models to predict lane changes.
 
+⚠️ If you downloaded the dataset from Zenodo, you can skip directly to the Setup section. ⚠️
+
 ### Workflow Overview
 
 1. **Log Conversion**: Convert `.txt` logs to `.h5` (CDF format) using `generate_CDF_Carla_log_to_H5.py`.
@@ -125,6 +127,7 @@ This repository includes the pipeline for preparing data and training models to 
 ---
 
 ### Detailed Workflow
+⚠️ If you downloaded the dataset from Zenodo, place the .csv file in the folder `dataset_preparation/dataset` and you can skip directly to Step 3.
 
 #### Step 0: Insert Map
 
@@ -147,7 +150,9 @@ Place the `LC_Simulator` folder into the `../maps/` directory. ⚠️ Ensure it 
 
 #### Step 3: Prepare Training, Validation, and Test Sets
 
-- Split users into folders for user-independent training:
+- From the `dataset_preparation/dataset` folder move manually the following user to `dataset_preparation/machine_learning/validation`, `dataset_preparation/machine_learning/testing`, `dataset_preparation/machine_learning/training`
+
+- If you downloaded the dataset from Zenodo, please split the users into separate folders to ensure user-independent training and comparable results:
     - **Validation**: Users 5, 8, 10, 12, 16, 19, 27.
     - **Testing**: Users 2, 7, 13, 18, 25, 31, 36.
     - **Training**: Remaining users.
