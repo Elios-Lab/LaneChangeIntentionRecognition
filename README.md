@@ -174,3 +174,20 @@ Run `CSV_to_windows_by_users_5s.ipynb` in the `machine_learning/` folder. Output
 --- 
 
 Enjoy using the Lane Change Intention Recognition Framework!
+
+### Citation
+
+If you used either the framework or the dataset in your work, please cite the related open-source paper as:
+PDM-Lite expert:
+```BibTeX
+@ARTICLE{11271346,
+  author={Forneris, Luca and Berta, Riccardo and Fresta, Matteo and Lazzaroni, Luca and Rojhan, Hadise and Oh, Changjae and Pighetti, Alessandro and Ballout, Hadi and Tango, Fabio and Bellotti, Francesco},
+  journal={IEEE Signal Processing Letters}, 
+  title={A Deployment-oriented Simulation Framework for Deep Learning-based Lane Change Prediction}, 
+  year={2025},
+  volume={},
+  number={},
+  pages={1-5},
+  keywords={Data models;Vehicle dynamics;Transformers;Training;Time series analysis;Synthetic data;Long short term memory;Roads;Pipelines;Data collection;Automated driving functions;dataset;deep learning;driver assistance systems;simulation;time-to-lane change prediction;Transformer;XGBoost},
+  doi={10.1109/LSP.2025.3638676}}
+```
