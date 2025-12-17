@@ -9,7 +9,7 @@
         "server": "../maps/LC_Simulator/CarlaUE4.exe",
         "map": "/Game/map_package/Maps/OneWayDMIR-02-08/OneWayDMIR-02-08",
         "baseline_mode": true,
-        "wheel_path": "./src/wheel.ini"
+        "wheel_path": "./src/wheel_config.ini"
     },
     "traffic": {
         "SNPV": {

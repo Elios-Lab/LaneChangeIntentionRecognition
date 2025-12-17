@@ -2377,6 +2377,7 @@ def game_loop(args, config):
             odometer_surface = font.render(odometer_text, True, (255, 255, 255))  # Render text
             display.blit(odometer_surface, (900, 1250))  # Display on the screen at the top-left corner
 
+            """
             # Then, handle automatic blinker turning off
             if controller.blinker_auto_off:
                 world.player.set_light_state(carla.VehicleLightState.NONE)
@@ -2410,7 +2411,8 @@ def game_loop(args, config):
                 if left_blinker_on:  # If left blinker is on, turn it off
                     world.player.set_light_state(carla.VehicleLightState.NONE)
                     left_blinker_on = False
-                
+            """
+            
     except Exception as e:
         exc_type, _, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
